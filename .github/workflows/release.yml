@@ -20,11 +20,11 @@ jobs:
       - name: Check for main
         run: |
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          if [[ $BRANCH == "main" ]];
+          if [[ "$BRANCH" == "main" ||  "$BRANCH" == "master" ]];
           then
             echo "Releasing main branch, resuming"
           else
-            echo "Releasing only allowed for branch 'main'"
+            echo "Releasing only allowed for branch 'main' or 'master'"
             exit 1
           fi
   
@@ -53,13 +53,14 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [ check-branch ]
+    needs: [ check-branch, check-maven-version ]
     steps:
 
       - name: Checkout project
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.SWP_CI_TOKEN }} # TODO: create github token which can do merge on master
+          # requires admin gitHub token which can do merge on master
+          token: ${{ secrets.RELEASE_TOKEN }} 
           fetch-depth: 0
 
       - name: Set up java 21
@@ -68,36 +69,44 @@ jobs:
           java-version: 21
           distribution: 'temurin'
           cache: 'maven'
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml.
+          settings-path: ${{ github.workspace }} # location for the settings.xml file  
 
-      - name: Cache maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
+      - name: View settings.xml
+        run: | 
+          echo "### show settings.xml ###"
+          cat ./settings.xml
+      
       - name: Setup git user
+        env:
+          CI_USER_EMAIL: ${{ vars.CI_USER_EMAIL }}
+          CI_USER: ${{ vars.CI_USER }}
         run: |
-          git config --global user.email "${{ vars.SWP_CI_USER_EMAIL }}" 
-          git config --global user.name "${{ vars.SWP_CI_USER }}"        
-
-      - name: Setup maven settings.xml
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          servers: >
-            [
-              {
-                "id": "central",
-                "username": "${{ vars.ARTIFACTORY_CI_SWP_USERNAME }}",
-                "password": "${{ secrets.ARTIFACTORY_CI_SWP_TOKEN }}"
-              },
-              {
-                "id": "snapshots",
-                "username": "${{ vars.ARTIFACTORY_CI_SWP_USERNAME }}",
-                "password": "${{ secrets.ARTIFACTORY_CI_SWP_TOKEN }}"
-              }
-            ]
+          # Check if required parameters are set
+          required_params=("CI_USER_EMAIL" "CI_USER")
+          for param in "${required_params[@]}"; do
+            if [ -z "${!param}" ]; then
+              echo "::error::Required parameter $param is not set"
+              exit 1
+            fi
+          done
+          git config --global user.email "${{ vars.CI_USER_EMAIL }}" 
+          git config --global user.name "${{ vars.CI_USER }}"        
 
       - name: Release
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          # requires admin gitHub token which can do merge on master
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         run: |
-          mvn -B release:prepare release:perform -Dusername=${{ vars.SWP_CI_USER_EMAIL }} -Dpassword=${{ secrets.SWP_CI_TOKEN }}
+          # Check if required parameters are set
+          required_params=("GITHUB_ACTOR" "GITHUB_TOKEN" "DOCKER_USER" "DOCKER_TOKEN")
+          for param in "${required_params[@]}"; do
+          if [ -z "${!param}" ]; then
+            echo "::error::Required parameter $param is not set"
+            exit 1
+          fi
+          done
+          mvn -B release:prepare release:perform -s $GITHUB_WORKSPACE/settings.xml
