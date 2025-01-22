@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Random;
+import java.security.SecureRandom;
 
 @Slf4j
 @Component
@@ -47,11 +47,11 @@ public class BeerLoader implements CommandLineRunner {
     public static final String BEER_30_UPC = "8670687641074";
 
     private final BeerRepository beerRepository;
-    private final Random random;
+    private final SecureRandom random;
 
     public BeerLoader(BeerRepository beerRepository) {
         this.beerRepository = beerRepository;
-        this.random = new Random();
+        this.random = new SecureRandom();
     }
 
     @Override
