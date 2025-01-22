@@ -3,7 +3,6 @@ package guru.springframework.spring6restmvcapi.bootstrap;
 import guru.springframework.spring6restmvcapi.entity.Beer;
 import guru.springframework.spring6restmvcapi.entity.BeerStyleEnum;
 import guru.springframework.spring6restmvcapi.repository.BeerRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import java.math.BigInteger;
 import java.util.Random;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class BeerLoader implements CommandLineRunner {
 
@@ -49,6 +47,12 @@ public class BeerLoader implements CommandLineRunner {
     public static final String BEER_30_UPC = "8670687641074";
 
     private final BeerRepository beerRepository;
+    private final Random random;
+
+    public BeerLoader(BeerRepository beerRepository) {
+        this.beerRepository = beerRepository;
+        this.random = new Random();
+    }
 
     @Override
     public void run(String... args) {
@@ -56,12 +60,9 @@ public class BeerLoader implements CommandLineRunner {
     }
 
     private synchronized void loadBeerObjects() {
-        log.debug("Loading initial data. Count is: {}", beerRepository.count() );
+        log.info("Loading initial data. Count is: {}", beerRepository.count() );
 
         if (beerRepository.count() == 0) {
-
-            Random random = new Random();
-
             beerRepository.save(Beer.builder()
                 .beerName("Mango Bobs")
                 .beerStyle(BeerStyleEnum.ALE)
@@ -302,7 +303,7 @@ public class BeerLoader implements CommandLineRunner {
                 .quantityOnHand(random.nextInt(5000))
                 .build());
 
-            log.debug("Beer Records loaded: {}", beerRepository.count());
+            log.info("Beer Records loaded: {}", beerRepository.count());
         }
     }
 }
