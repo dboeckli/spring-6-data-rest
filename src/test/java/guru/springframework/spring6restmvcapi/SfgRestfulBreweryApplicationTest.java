@@ -18,7 +18,7 @@ public class SfgRestfulBreweryApplicationTest {
     @Test
     public void contextLoads() {
         log.info("Testing Spring 6 Application...");
-        assertEquals(30, beerRepository.count()); // Should not throw any exception
+        assertEquals(30, beerRepository.count()); 
     }
 
 }
