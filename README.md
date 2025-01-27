@@ -1,7 +1,9 @@
 # Spring Framework 6: Beginner to Guru
 ## Spring Data Rest
 
-Chapter 19: Spring Data Rest
+## Swagger/Openapi Url
+
+http://localhost:8084/swagger-ui/index.html
 
 ## Getting Your Development Environment Setup
 ### Recommended Versions
