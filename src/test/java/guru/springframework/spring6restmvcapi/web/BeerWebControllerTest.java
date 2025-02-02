@@ -1,6 +1,5 @@
 package guru.springframework.spring6restmvcapi.web;
 
-import guru.springframework.spring6restmvcapi.dto.BeerDTO;
 import guru.springframework.spring6restmvcapi.entity.Beer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
@@ -40,7 +39,7 @@ class BeerWebControllerTest {
 
         assertAll(
             () -> assertEquals("beers", viewName),
-            () -> assertEquals(25, ((List<BeerDTO>)model.getAttribute("beers")).size()),
+            () -> assertEquals(25, ((List<Beer>)model.getAttribute("beers")).size()),
             () -> assertEquals(2, model.getAttribute("totalPages")),
             () -> assertEquals(0, model.getAttribute("currentPage")),
             () -> assertEquals(30L, model.getAttribute("totalItems")),
@@ -72,7 +71,7 @@ class BeerWebControllerTest {
         assertAll(
             () -> assertEquals("beer", viewName),
             () -> assertNotNull(model.getAttribute("beer")),
-            () -> assertTrue(model.getAttribute("beer") instanceof Beer),
+            () -> assertInstanceOf(Beer.class, model.getAttribute("beer")),
             () -> assertEquals(beerId, ((Beer) model.getAttribute("beer")).getId())
         );
     }
