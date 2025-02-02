@@ -13,17 +13,21 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-@RequestMapping("/web")
+@RequestMapping(BeerWebController.WEB_BASE_PATH)
 @RequiredArgsConstructor
 public class BeerWebController {
     
+    public static final String WEB_BASE_PATH = "/web";
+    public static final String BEERS = "beers"  ;
+    public static final String LIST_BEERS_PATH = WEB_BASE_PATH + "/" + BEERS;
+    private static final String REDIRECT_PREFIX = "/redirect";
+    
     private final BeerRepository beerRepository;
 
-    @GetMapping("/beers")
+    @GetMapping("/" + BEERS)
     public String listBeers(Model model,
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "25") int size) {
@@ -37,7 +41,7 @@ public class BeerWebController {
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -49,7 +53,7 @@ public class BeerWebController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "beers";
+        return BEERS;
     }
 
     @GetMapping("/beer/{id}")
@@ -68,7 +72,7 @@ public class BeerWebController {
     @PostMapping("/beer/new")
     public String createBeer(@ModelAttribute Beer beer) {
         beerRepository.save(beer);
-        return "redirect:/web/beers";
+        return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
 
     @GetMapping("/beer/{id}/edit")
@@ -83,13 +87,13 @@ public class BeerWebController {
     public String updateBeer(@PathVariable UUID id, @ModelAttribute Beer beer) {
         beer.setId(id);
         beerRepository.save(beer);
-        return "redirect:/web/beers";
+        return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
 
     @DeleteMapping("/beer/{id}/delete")
     public String deleteBeer(@PathVariable UUID id) {
         beerRepository.deleteById(id);
-        return "redirect:/web/beers";
+        return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
     
 }
