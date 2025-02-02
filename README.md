@@ -5,6 +5,17 @@
 
 http://localhost:8084/swagger-ui/index.html
 
+## Web Interface
+
+This application includes a web interface that allows users to interact with the beer data through a browser. The web interface provides the following features:
+
+- View a paginated list of beers
+- Navigate through pages of beer listings
+- View details of individual beers
+
+To access the web interface, start the application and navigate to: http://localhost:8084/web/beers
+
+
 ## Getting Your Development Environment Setup
 ### Recommended Versions
 | Recommended             | Reference                                                                                                                                                     | Notes                                                                                                                                                                                                                  |
