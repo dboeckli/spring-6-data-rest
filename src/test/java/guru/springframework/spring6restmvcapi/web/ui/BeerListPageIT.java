@@ -119,6 +119,56 @@ class BeerListPageIT {
         assertEquals(newBeerName, beerMap.get(beerId), "Beer name should be updated in the beer list page");
     }
 
+    @Test
+    @Order(99)
+    public void testDeleteBeer() {
+        // Navigate to the beer list page
+        webDriver.get("http://localhost:" + port + "/web/beers");
+        waitForPageLoad();
+
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+
+        // Get the initial total number of beers
+        WebElement totalItemsElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("totalItems")));
+        int initialTotalItems = Integer.parseInt(totalItemsElement.getText());
+        log.info("Initial total items: {}", initialTotalItems);
+
+        // Find the delete button for the first beer
+        WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.cssSelector("button[id^='deleteBeer-']")
+        ));
+        String deleteButtonId = deleteButton.getAttribute("id");
+        String beerId = StringUtils.substringAfter(deleteButtonId, "deleteBeer-");
+
+        // Log the beer being deleted
+        WebElement beerNameElement = webDriver.findElement(By.id("beerName-" + beerId));
+        String beerName = beerNameElement.getText();
+        log.info("Deleting beer: ID = {}, Name = {}", beerId, beerName);
+
+        // Click the delete button
+        ((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", deleteButton);
+
+        // Handle the confirmation dialog
+        wait.until(ExpectedConditions.alertIsPresent());
+        webDriver.switchTo().alert().accept();
+
+        // Wait for the page to reload
+        waitForPageLoad();
+
+        // Check that the total number of beers has decreased by 1
+        totalItemsElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("totalItems")));
+        int finalTotalItems = Integer.parseInt(totalItemsElement.getText());
+        log.info("Final total items: {}", finalTotalItems);
+
+        assertEquals(initialTotalItems - 1, finalTotalItems, "Total number of beers should decrease by 1 after deletion");
+
+        // Verify that the deleted beer is no longer in the list
+        List<WebElement> remainingBeerNames = webDriver.findElements(By.cssSelector("td[id^='beerName-']"));
+        boolean beerStillExists = remainingBeerNames.stream()
+            .anyMatch(element -> element.getText().equals(beerName));
+        assertFalse(beerStillExists, "Deleted beer should not be present in the list");
+    }
+
     private void waitForPageLoad() {
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(30));
         wait.until((ExpectedCondition<Boolean>) wd ->

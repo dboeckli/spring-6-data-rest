@@ -11,6 +11,8 @@
 <div class="container mt-5">
     <h1 class="mb-4">Beer List</h1>
 
+    <p>Total Beers: <span id="totalItems" th:text="${totalItems}"></span></p>
+
     <a href="/web/beer/new" class="btn btn-primary mb-3" id="createNewBeer">Create New Beer</a>
 
     <nav aria-label="Page navigation" th:if="${totalPages > 1}">

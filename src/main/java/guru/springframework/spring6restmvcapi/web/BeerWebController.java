@@ -101,9 +101,10 @@ public class BeerWebController {
         return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
 
-    @DeleteMapping("/beer/{id}/delete")
+    @PostMapping("/beer/delete/{id}")
     public String deleteBeer(@PathVariable UUID id) {
         beerRepository.deleteById(id);
+        log.info("Deleted beer with ID: {}", id);
         return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
     
