@@ -29,7 +29,8 @@ public class BeerWebController {
     public static final String WEB_BASE_PATH = "/web";
     public static final String BEERS_TEMPLATE = "beers"  ;
     public static final String LIST_BEERS_PATH = WEB_BASE_PATH + "/" + BEERS_TEMPLATE;
-    private static final String REDIRECT_PREFIX = "redirect:";
+    public static final String REDIRECT_PREFIX = "redirect:";
+    public static final String BEERFORM = "beerForm:";
     
     private final BeerRepository beerRepository;
 
@@ -73,7 +74,7 @@ public class BeerWebController {
     public String newBeerForm(Model model) {
         log.info("Creating new beer in form");
         model.addAttribute("beer", new Beer());
-        return "beerForm";
+        return BEERFORM;
     }
 
     @PostMapping("/beer/edit/")
@@ -88,7 +89,7 @@ public class BeerWebController {
             if (hasOtherErrors) {
                 log.error("Validation errors occurred: {}", bindingResult.getAllErrors());
                 model.addAttribute("beer", beer);
-                return "beerForm";
+                return BEERFORM;
             } 
         }
         Beer newBeer = new Beer();
@@ -109,7 +110,7 @@ public class BeerWebController {
         log.info("Updating existing beer in form");
         Beer beer = beerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
         model.addAttribute("beer", beer);
-        return "beerForm";
+        return BEERFORM;
     }
 
     @PostMapping("/beer/edit/{id}")
