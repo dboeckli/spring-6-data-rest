@@ -98,8 +98,13 @@ class BeerListPageIT {
         beerNameInput.sendKeys(newBeerName);
 
         // Submit the form
-        WebElement submitButton = webDriver.findElement(By.cssSelector("button[type='submit']"));
-        submitButton.click();
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
+        try {
+            submitButton.click();
+        } catch (Exception e) {
+            JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+            executor.executeScript("arguments[0].click();", submitButton);
+        }
 
         // Wait for the beer list page to reload
         wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + "/web/beers"));
