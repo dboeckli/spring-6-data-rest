@@ -26,13 +26,13 @@ import java.util.stream.IntStream;
 public class BeerWebController {
     
     public static final String WEB_BASE_PATH = "/web";
-    public static final String BEERS = "beers"  ;
-    public static final String LIST_BEERS_PATH = WEB_BASE_PATH + "/" + BEERS;
-    private static final String REDIRECT_PREFIX = "/redirect";
+    public static final String BEERS_TEMPLATE = "beers"  ;
+    public static final String LIST_BEERS_PATH = WEB_BASE_PATH + "/" + BEERS_TEMPLATE;
+    private static final String REDIRECT_PREFIX = "redirect:";
     
     private final BeerRepository beerRepository;
 
-    @GetMapping("/" + BEERS)
+    @GetMapping("/" + BEERS_TEMPLATE)
     public String listBeers(Model model,
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "25") int size) {
@@ -58,7 +58,7 @@ public class BeerWebController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return BEERS;
+        return BEERS_TEMPLATE;
     }
 
     @GetMapping("/beer/{id}")
@@ -104,7 +104,7 @@ public class BeerWebController {
         existingBeer.setPrice(beer.getPrice());
         
         beerRepository.save(existingBeer);
-        return BEERS;
+        return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
 
     @DeleteMapping("/beer/{id}/delete")
