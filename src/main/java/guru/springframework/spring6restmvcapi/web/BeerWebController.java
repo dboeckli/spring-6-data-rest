@@ -2,12 +2,16 @@ package guru.springframework.spring6restmvcapi.web;
 
 import guru.springframework.spring6restmvcapi.entity.Beer;
 import guru.springframework.spring6restmvcapi.repository.BeerRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +22,7 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping(BeerWebController.WEB_BASE_PATH)
 @RequiredArgsConstructor
+@Slf4j
 public class BeerWebController {
     
     public static final String WEB_BASE_PATH = "/web";
@@ -75,19 +80,31 @@ public class BeerWebController {
         return REDIRECT_PREFIX + LIST_BEERS_PATH;
     }
 
-    @GetMapping("/beer/{id}/edit")
+    @GetMapping("/beer/edit/{id}")
     public String editBeerForm(@PathVariable UUID id, Model model) {
-        Beer beer = beerRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
+        Beer beer = beerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
         model.addAttribute("beer", beer);
         return "beerForm";
     }
 
-    @PostMapping("/beer/{id}/edit")
-    public String updateBeer(@PathVariable UUID id, @ModelAttribute Beer beer) {
-        beer.setId(id);
-        beerRepository.save(beer);
-        return REDIRECT_PREFIX + LIST_BEERS_PATH;
+    @PostMapping("/beer/edit/{id}")
+    public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") Beer beer, BindingResult result, ModelMap model) {
+        log.info("### Updating beer: {}", beer);
+        log.info("### Updating bee model: {}", model);
+        log.info("### Updating beer result: {}", result);
+        
+        Beer existingBeer = beerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
+        
+        // Update the fields of the existing beer
+        existingBeer.setBeerName(beer.getBeerName());
+        existingBeer.setBeerStyle(beer.getBeerStyle());
+        existingBeer.setUpc(beer.getUpc());
+        existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+        existingBeer.setPrice(beer.getPrice());
+        
+        beerRepository.save(existingBeer);
+        return BEERS;
     }
 
     @DeleteMapping("/beer/{id}/delete")

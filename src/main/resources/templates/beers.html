@@ -70,8 +70,8 @@
             <td th:text="${beer.quantityOnHand}" th:id="'beerQuantity-' + ${beer.id}">Quantity</td>
             <td>
                 <a th:href="@{/web/beer/{id}(id=${beer.id})}" class="btn btn-primary btn-sm" th:id="'viewBeer-' + ${beer.id}">View</a>
-                <a th:href="@{/web/beer/{id}/edit(id=${beer.id})}" class="btn btn-secondary btn-sm" th:id="'editBeer-' + ${beer.id}">Edit</a>
-                <form th:action="@{/web/beer/{id}/delete(id=${beer.id})}" method="post" style="display: inline;">
+                <a th:href="@{/web/beer/edit/{id}(id=${beer.id})}" class="btn btn-secondary btn-sm" th:id="'editBeer-' + ${beer.id}">Edit</a>
+                <form th:action="@{/web/beer/delete/{id}(id=${beer.id})}" method="post" style="display: inline;">
                     <input type="hidden" name="_method" value="delete" />
                     <button type="submit" class="btn btn-danger btn-sm" th:id="'deleteBeer-' + ${beer.id}" onclick="return confirm('Are you sure you want to delete this beer?')">Delete</button>
                 </form>
