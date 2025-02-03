@@ -14,7 +14,7 @@
     <form th:action="@{/web/beer/edit/{id}(id=${beer.id})}" th:object="${beer}" method="post">
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{version}" />
-        
+
         <div class="mb-3">
             <label for="beerName" class="form-label">Name:</label>
             <input type="text" class="form-control" id="beerName" th:field="*{beerName}" required />
