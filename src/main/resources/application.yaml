@@ -40,6 +40,7 @@ logbook:
     exclude:
       - path: /actuator/health  
       # this is a workaround to fix logbook bug when log level is set on trace  
-      - path: /web/**    
+      - path: /web/**   
+      - path: /webjars/**   
   
   

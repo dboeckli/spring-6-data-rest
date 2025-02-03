@@ -10,8 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -88,11 +86,7 @@ public class BeerWebController {
     }
 
     @PostMapping("/beer/edit/{id}")
-    public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") Beer beer, BindingResult result, ModelMap model) {
-        log.info("### Updating beer: {}", beer);
-        log.info("### Updating bee model: {}", model);
-        log.info("### Updating beer result: {}", result);
-        
+    public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") Beer beer) {
         Beer existingBeer = beerRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
         
