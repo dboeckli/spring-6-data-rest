@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -117,6 +116,70 @@ class BeerListPageIT {
         }
         log.info("### Checking if the beer name has been updated: {}", beerId);
         assertEquals(newBeerName, beerMap.get(beerId), "Beer name should be updated in the beer list page");
+    }
+
+    @Test
+    @Order(2)
+    public void testCreateNewBeer() {
+        // Navigate to the beer list page
+        webDriver.get("http://localhost:" + port + "/web/beers");
+        waitForPageLoad();
+
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+
+        // Get the initial total number of beers
+        WebElement totalItemsElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("totalItems")));
+        int initialTotalItems = Integer.parseInt(totalItemsElement.getText());
+        log.info("Initial total items: {}", initialTotalItems);
+
+        // Click on the "Create New Beer" button
+        WebElement newBeerButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("createNewBeer")));
+        newBeerButton.click();
+
+        // Wait for the new beer form to load
+        wait.until(ExpectedConditions.urlContains("/web/beer/new"));
+
+        // Fill in the form
+        WebElement beerNameInput = webDriver.findElement(By.id("beerName"));
+        String newBeerName = "Test New Beer " + System.currentTimeMillis();
+        beerNameInput.sendKeys(newBeerName);
+
+        WebElement beerStyleInput = webDriver.findElement(By.id("beerStyle"));
+        beerStyleInput.sendKeys("IPA");
+
+        WebElement upcInput = webDriver.findElement(By.id("upc"));
+        upcInput.sendKeys("123456789012");
+
+        WebElement priceInput = webDriver.findElement(By.id("price"));
+        priceInput.sendKeys("10.99");
+
+        WebElement quantityOnHandInput = webDriver.findElement(By.id("quantityOnHand"));
+        quantityOnHandInput.sendKeys("100");
+
+        // Submit the form
+        WebElement submitButton = webDriver.findElement(By.cssSelector("button[type='submit']"));
+        submitButton.click();
+
+        // Wait for the beer list page to reload
+        wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + "/web/beers"));
+
+        // Check that the total number of beers has increased by 1
+        totalItemsElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("totalItems")));
+        int finalTotalItems = Integer.parseInt(totalItemsElement.getText());
+        log.info("Final total items: {}", finalTotalItems);
+
+        assertEquals(initialTotalItems + 1, finalTotalItems, "Total number of beers should increase by 1 after creation");
+
+        // Navigate to the next page
+        WebElement nextPageButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@class, 'page-link') and text()='Next']")));
+        nextPageButton.click();
+        waitForPageLoad();
+        
+        // Verify that the new beer is in the list
+        List<WebElement> beerNames = webDriver.findElements(By.cssSelector("td[id^='beerName-']"));
+        boolean newBeerExists = beerNames.stream()
+            .anyMatch(element -> element.getText().equals(newBeerName));
+        assertTrue(newBeerExists, "Newly created beer should be present in the list");
     }
 
     @Test
