@@ -32,13 +32,13 @@
             </div>
 
             <div class="mt-4">
-                <a th:href="@{/beer/{id}/edit(id=${beer.id})}" class="btn btn-primary" id="editBeerButton">Edit Beer</a>
-                <a th:href="@{/beer/{id}/delete(id=${beer.id})}" class="btn btn-danger" id="deleteBeerButton" onclick="return confirm('Are you sure you want to delete this beer?')">Delete Beer</a>
+                <a th:href="@{/beer/edit/{id}(id=${beer.id})}" class="btn btn-primary" id="editBeerButton">Edit Beer</a>
+                <a th:href="@{/beer/delete/{id}(id=${beer.id})}" class="btn btn-danger" id="deleteBeerButton" onclick="return confirm('Are you sure you want to delete this beer?')">Delete Beer</a>
             </div>
         </div>
     </div>
 
-    <a href="/beers" class="btn btn-secondary mt-3" id="backToListButton">Back to Beer List</a>
+    <a href="/web/beers" class="btn btn-secondary mt-3" id="backToListButton">Back to Beer List</a>
 </div>
 
 </body>
