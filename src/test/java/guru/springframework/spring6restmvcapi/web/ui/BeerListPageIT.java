@@ -58,7 +58,7 @@ class BeerListPageIT {
 
     @Test
     @Order(1)
-     void testBeerListContainsItems() {
+    void testBeerListContainsItems() {
         webDriver.get("http://localhost:" + port + "/web/beers");
         waitForPageLoad();
         
@@ -72,7 +72,7 @@ class BeerListPageIT {
     }
 
     @Test
-    public void testEditBeer() {
+    void testEditBeer() {
         // Navigate to the beer list page
         webDriver.get("http://localhost:" + port + "/web/beers");
         waitForPageLoad();
@@ -125,7 +125,7 @@ class BeerListPageIT {
 
     @Test
     @Order(2)
-    public void testCreateNewBeer() {
+    void testCreateNewBeer() {
         // Navigate to the beer list page
         webDriver.get("http://localhost:" + port + "/web/beers");
         waitForPageLoad();
@@ -162,8 +162,13 @@ class BeerListPageIT {
         quantityOnHandInput.sendKeys("100");
 
         // Submit the form
-        WebElement submitButton = webDriver.findElement(By.cssSelector("button[type='submit']"));
-        submitButton.click();
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
+        try {
+            submitButton.click();
+        } catch (Exception e) {
+            JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+            executor.executeScript("arguments[0].click();", submitButton);
+        }
 
         // Wait for the beer list page to reload
         wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + "/web/beers"));
@@ -189,7 +194,7 @@ class BeerListPageIT {
 
     @Test
     @Order(99)
-    public void testDeleteBeer() {
+    void testDeleteBeer() {
         // Navigate to the beer list page
         webDriver.get("http://localhost:" + port + "/web/beers");
         waitForPageLoad();
