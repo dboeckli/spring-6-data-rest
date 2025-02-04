@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static guru.springframework.spring6restmvcapi.web.BeerWebController.BEER_PAGE;
+import static guru.springframework.spring6restmvcapi.web.BeerWebController.LIST_BEERS_PAGE;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,7 +53,7 @@ class BeerListPageIT {
     @Test
     @Order(0)
     void testBeerListPageLoads() {
-        webDriver.get("http://localhost:" + port + "/web/beers");
+        webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
         assertEquals("Beer List", webDriver.getTitle());
     }
@@ -59,7 +61,7 @@ class BeerListPageIT {
     @Test
     @Order(1)
     void testBeerListContainsItems() {
-        webDriver.get("http://localhost:" + port + "/web/beers");
+        webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
         
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
@@ -74,7 +76,7 @@ class BeerListPageIT {
     @Test
     void testEditBeer() {
         // Navigate to the beer list page
-        webDriver.get("http://localhost:" + port + "/web/beers");
+        webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
 
         // Find and click the edit button for the first beer
@@ -89,7 +91,7 @@ class BeerListPageIT {
         editButton.click();
 
         // Wait for the edit page to load
-        wait.until(ExpectedConditions.urlContains("/web/beer/edit/"));
+        wait.until(ExpectedConditions.urlContains(BEER_PAGE + "/edit/"));
 
         // Find the beer name input field and update it
         WebElement beerNameInput = webDriver.findElement(By.id("beerName"));
@@ -107,7 +109,7 @@ class BeerListPageIT {
         }
 
         // Wait for the beer list page to reload
-        wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + "/web/beers"));
+        wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + LIST_BEERS_PAGE));
 
         List<WebElement> beerRows = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#beerTable tbody tr")));
         log.info("Logging all beer names and IDs:");
@@ -127,7 +129,7 @@ class BeerListPageIT {
     @Order(2)
     void testCreateNewBeer() {
         // Navigate to the beer list page
-        webDriver.get("http://localhost:" + port + "/web/beers");
+        webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
 
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
@@ -142,7 +144,7 @@ class BeerListPageIT {
         newBeerButton.click();
 
         // Wait for the new beer form to load
-        wait.until(ExpectedConditions.urlContains("/web/beer/new"));
+        wait.until(ExpectedConditions.urlContains(BEER_PAGE + "/new"));
 
         // Fill in the form
         WebElement beerNameInput = webDriver.findElement(By.id("beerName"));
@@ -171,7 +173,7 @@ class BeerListPageIT {
         }
 
         // Wait for the beer list page to reload
-        wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + "/web/beers"));
+        wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + LIST_BEERS_PAGE));
 
         // Check that the total number of beers has increased by 1
         totalItemsElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("totalItems")));
@@ -196,7 +198,7 @@ class BeerListPageIT {
     @Order(99)
     void testDeleteBeer() {
         // Navigate to the beer list page
-        webDriver.get("http://localhost:" + port + "/web/beers");
+        webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
 
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
