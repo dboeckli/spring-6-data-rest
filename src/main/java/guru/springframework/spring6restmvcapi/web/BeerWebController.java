@@ -27,9 +27,15 @@ import java.util.stream.IntStream;
 public class BeerWebController {
     
     public static final String WEB_BASE_PATH = "/web";
+    
     public static final String BEERS_TEMPLATE = "beers"  ;
-    public static final String LIST_BEERS_PATH = WEB_BASE_PATH + "/" + BEERS_TEMPLATE;
-    private static final String REDIRECT_PREFIX = "redirect:";
+    public static final String BEER_TEMPLATE = "beer";
+    public static final String BEER_FORM_TEMPLATE = "beerForm";
+    
+    public static final String LIST_BEERS_PAGE = WEB_BASE_PATH + "/" + BEERS_TEMPLATE;
+    public static final String BEER_PAGE = WEB_BASE_PATH + "/" + BEER_TEMPLATE;
+
+    public static final String REDIRECT_PREFIX = "redirect:";
     
     private final BeerRepository beerRepository;
 
@@ -62,21 +68,21 @@ public class BeerWebController {
         return BEERS_TEMPLATE;
     }
 
-    @GetMapping("/beer/{id}")
+    @GetMapping("/" + BEER_TEMPLATE + "/{id}")
     public String getBeer(@PathVariable UUID id, Model model) {
         Beer beer = beerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         model.addAttribute("beer", beer);
-        return "beer";
+        return BEER_TEMPLATE;
     }
 
-    @GetMapping("/beer/new")
+    @GetMapping("/" + BEER_TEMPLATE + "/new")
     public String newBeerForm(Model model) {
         log.info("Creating new beer in form");
         model.addAttribute("beer", new Beer());
-        return "beerForm";
+        return BEER_FORM_TEMPLATE;
     }
 
-    @PostMapping("/beer/edit/")
+    @PostMapping("/" + BEER_TEMPLATE + "/edit/")
     public String createBeer(@Valid @ModelAttribute Beer beer, BindingResult bindingResult, Model model) {
         log.info("### Creating new beer: {}", beer);
         if (bindingResult.hasErrors()) {
@@ -88,7 +94,7 @@ public class BeerWebController {
             if (hasOtherErrors) {
                 log.error("Validation errors occurred: {}", bindingResult.getAllErrors());
                 model.addAttribute("beer", beer);
-                return "beerForm";
+                return BEER_FORM_TEMPLATE;
             } 
         }
         Beer newBeer = new Beer();
@@ -101,18 +107,18 @@ public class BeerWebController {
         newBeer.setLastModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
         Beer createdBeer = beerRepository.save(beer);
         log.info("### Created new beer: {}", createdBeer);
-        return REDIRECT_PREFIX + LIST_BEERS_PATH;
+        return REDIRECT_PREFIX + LIST_BEERS_PAGE;
     }
 
-    @GetMapping("/beer/edit/{id}")
+    @GetMapping("/" + BEER_TEMPLATE + "/edit/{id}")
     public String editBeerForm(@PathVariable UUID id, Model model) {
         log.info("Updating existing beer in form");
         Beer beer = beerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
         model.addAttribute("beer", beer);
-        return "beerForm";
+        return BEER_FORM_TEMPLATE;
     }
 
-    @PostMapping("/beer/edit/{id}")
+    @PostMapping("/" + BEER_TEMPLATE + "/edit/{id}")
     public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") Beer beer) {
         log.info("### Updating beer: {}", id);
         Beer existingBeer = beerRepository.findById(id)
@@ -127,15 +133,15 @@ public class BeerWebController {
         
         beerRepository.save(existingBeer);
         log.info("### Updating beer: {} to {}", existingBeer, beer);
-        return REDIRECT_PREFIX + LIST_BEERS_PATH;
+        return REDIRECT_PREFIX + LIST_BEERS_PAGE;
     }
 
-    @PostMapping("/beer/delete/{id}")
+    @PostMapping(BEER_TEMPLATE + "/delete/{id}")
     public String deleteBeer(@PathVariable UUID id) {
         log.info("Deleting beer with ID: {}", id);
         beerRepository.deleteById(id);
         log.info("Deleted beer with ID: {}", id);
-        return REDIRECT_PREFIX + LIST_BEERS_PATH;
+        return REDIRECT_PREFIX + LIST_BEERS_PAGE;
     }
     
 }
