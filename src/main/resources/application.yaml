@@ -42,5 +42,11 @@ logbook:
       # this is a workaround to fix logbook bug when log level is set on trace  
       - path: /web/**   
       - path: /webjars/**   
+        
+security:
+  cors:
+    allowed-origins:
+      - http://localhost:8080 # gateway project runs on port 8080
+      - http://127.0.0.1:8080 # gateway project runs on port 8080    
   
   
