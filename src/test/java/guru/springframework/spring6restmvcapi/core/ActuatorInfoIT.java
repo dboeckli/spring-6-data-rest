@@ -3,6 +3,7 @@ package guru.springframework.spring6restmvcapi.core;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,6 +21,9 @@ class ActuatorInfoIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    BuildProperties buildProperties;
+
     @Test
     void actuatorInfoTest() throws Exception {
         MvcResult result = mockMvc.perform(get("/actuator/info"))
@@ -29,8 +33,8 @@ class ActuatorInfoIT {
             .andExpect(jsonPath("$.build.javaVersion").value("21"))
             .andExpect(jsonPath("$.build.commit-id").isString())
             .andExpect(jsonPath("$.build.javaVendor").isString())
-            .andExpect(jsonPath("$.build.artifact").value("spring-6-data-rest"))
-            .andExpect(jsonPath("$.build.group").value("guru.springframework"))
+            .andExpect(jsonPath("$.build.artifact").value(buildProperties.getArtifact()))
+            .andExpect(jsonPath("$.build.group").value(buildProperties.getGroup()))
             .andReturn();
         
         log.info("Response: {}", result.getResponse().getContentAsString());
