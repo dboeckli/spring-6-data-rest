@@ -1,2 +1,2 @@
 ### Open/Swagger
-GET http://localhost:8084/v3/api-docs
+GET http://localhost:{{application-port}}/v3/api-docs

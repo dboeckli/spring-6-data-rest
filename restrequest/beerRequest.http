@@ -1,15 +1,15 @@
 ### Profile
-GET http://localhost:8084/api/v4/profile/beer
+GET http://localhost:{{application-port}}/api/v4/profile/beer
 Accept: application/json
 Content-Type: application/json
 
 ### Get all beers
-GET http://localhost:8084/api/v4/beer
+GET http://localhost:{{application-port}}/api/v4/beer
 Accept: application/json
 Content-Type: application/json
 
 ### Create new Beer
-POST http://localhost:8084/api/v4/beer
+POST http://localhost:{{application-port}}/api/v4/beer
 Accept: application/json
 Content-Type: application/json; charset=utf-8
 
@@ -22,7 +22,7 @@ Content-Type: application/json; charset=utf-8
 }
 
 ### Change an existing beer. do a get first to retrieve the correct id
-PUT http://localhost:8084/api/v4/beer/2edca6a7-5b39-481b-9a27-cb83fda82b91
+PUT http://localhost:{{application-port}}/api/v4/beer/2edca6a7-5b39-481b-9a27-cb83fda82b91
 Accept: application/json
 Content-Type: application/json; charset=utf-8
 
@@ -35,17 +35,17 @@ Content-Type: application/json; charset=utf-8
 }
 
 ### DELETE existing beer. do a get first to retrieve the correct id
-DELETE http://localhost:8084/api/v4/beer/2edca6a7-5b39-481b-9a27-cb83fda82b91
+DELETE http://localhost:{{application-port}}/api/v4/beer/2edca6a7-5b39-481b-9a27-cb83fda82b91
 Accept: application/json
 Content-Type: application/json; charset=utf-8
 
 ### Find by UPC. Check method in BeerRepository: findByUpc. do a get first to retrieve an existing upc
-GET http://localhost:8084/api/v4/beer/search/findByUpc?upc=2380867498485
+GET http://localhost:{{application-port}}/api/v4/beer/search/findByUpc?upc=2380867498485
 Accept: application/json
 Content-Type: application/json
 
 ### Find by Beerstyle. Check method in BeerRepository: findAllByBeerStyle. do a get first to retrieve an existing beerstyle
-GET http://localhost:8084/api/v4/beer/search/findAllByBeerStyle?beerStyle=ALE
+GET http://localhost:{{application-port}}/api/v4/beer/search/findAllByBeerStyle?beerStyle=ALE
 Accept: application/json
 Content-Type: application/json
 
