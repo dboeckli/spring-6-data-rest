@@ -3,7 +3,8 @@
 
 ## Swagger/Openapi Url
 
-http://localhost:8084/swagger-ui/index.html
+- http://localhost:8084/swagger-ui/index.html
+- http://localhost:30084/swagger-ui/index.html
 
 ## Web Interface
 
@@ -15,26 +16,75 @@ This application includes a web interface that allows users to interact with the
 
 To access the web interface, start the application and navigate to: 
 
-http://localhost:8084/web/beers
+- http://localhost:8084/web/beers
+- http://localhost:30084/web/beers
 
+## Kubernetes
 
-## Getting Your Development Environment Setup
-### Recommended Versions
-| Recommended             | Reference                                                                                                                                                     | Notes                                                                                                                                                                                                                  |
-|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Oracle Java 21 JDK      | [Download](https://www.oracle.com/java/technologies/downloads/#java21) | Java 17 or higher is required for Spring Framework 6. Java 21 is recommended for the course.                                                                                                                           |
-| IntelliJ 2024 or Higher | [Download](https://www.jetbrains.com/idea/download/)                                                                                                          | Ultimate Edition recommended. Students can get a free 120 trial license [here](https://github.com/springframeworkguru/spring5webapp/wiki/Which-IDE-to-Use%3F#how-do-i-get-the-free-120-day-trial-to-intellij-ultimate) |
-| Maven 3.9.6 or higher   | [Download](https://maven.apache.org/download.cgi)                                                                                                             | [Installation Instructions](https://maven.apache.org/install.html)                                                                                                                                                     |
-| Gradle 8.7 or higher    | [Download](https://gradle.org/install/)                                                                                                                       |                                                                                                                                                                     |
-| Git 2.39 or higher      | [Download](https://git-scm.com/downloads)                                                                                                                     |                                                                                                                                                                                                                        | 
-| Git GUI Clients         | [Downloads](https://git-scm.com/downloads/guis)                                                                                                               | Not required. But can be helpful if new to Git. SourceTree is a good option for Mac and Windows users.                                                                                                                 |
+To run maven filtering for destination target/k8s and destination target/helm run:
+```bash
+mvn clean install -DskipTests 
+```
 
-## All Spring Framework Guru Courses
-### Spring Framework 6
-* [Spring Framework 6 - Beginner to Guru](https://www.udemy.com/course/spring-framework-6-beginner-to-guru/?referralCode=2BD0B7B7B6B511D699A9)
-* [Spring AI: Beginner to Guru](https://www.udemy.com/course/spring-ai-beginner-to-guru/?referralCode=EF8DB31C723FFC8E2751)
-* [Hibernate and Spring Data JPA: Beginner to Guru](https://www.udemy.com/course/hibernate-and-spring-data-jpa-beginner-to-guru/?referralCode=251C4C865302C7B1BB8F)
-* [API First Engineering with Spring Boot](https://www.udemy.com/course/api-first-engineering-with-spring-boot/?referralCode=C6DAEE7338215A2CF276)
-* [Introduction to Kafka with Spring Boot](https://www.udemy.com/course/introduction-to-kafka-with-spring-boot/?referralCode=15118530CA63AD1AF16D)
-* [Spring Security: Beginner to Guru](https://www.udemy.com/course/spring-security-core-beginner-to-guru/?referralCode=306F288EB78688C0F3BC)
+### Deployment with Kubernetes
 
+Deployment goes into the default namespace.
+
+To deploy all resources:
+```bash
+kubectl apply -f target/k8s/
+```
+
+To remove all resources:
+```bash
+kubectl delete -f target/k8s/
+```
+
+Check
+```bash
+kubectl get deployments -o wide
+kubectl get pods -o wide
+```
+
+You can use the actuator rest call to verify via port 30084
+
+### Deployment with Helm
+
+Be aware that we are using a different namespace here (not default).
+
+Go to the directory where the tgz file has been created after 'mvn install'
+```powershell
+cd target/helm/repo
+```
+
+unpack
+```powershell
+$file = Get-ChildItem -Filter spring-6-data-rest-v*.tgz | Select-Object -First 1
+tar -xvf $file.Name
+```
+
+install
+```powershell
+$APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
+helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME --namespace spring-6-data-rest --create-namespace --wait --timeout 5m --debug
+```
+
+show logs
+```powershell
+kubectl get pods -n spring-6-data-rest
+```
+
+replace $POD with pods from the command above
+```powershell
+kubectl logs $POD -n spring-6-data-rest --all-containers
+```
+
+Show Endpoints
+```powershell
+kubectl get endpoints -n sdjpa-intro
+```
+
+uninstall
+```powershell
+helm uninstall $APPLICATION_NAME  --namespace spring-6-data-rest
+```
