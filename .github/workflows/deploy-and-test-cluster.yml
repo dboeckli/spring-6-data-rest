@@ -157,7 +157,8 @@ jobs:
           --namespace ${NAMESPACE} \
           --create-namespace \
           --wait --timeout 5m \
-          --debug
+          --debug \
+          --render-subchart-notes
 
       - name: Wait for Pods to be ready
         env:
