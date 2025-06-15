@@ -66,7 +66,7 @@ tar -xvf $file.Name
 install
 ```powershell
 $APPLICATION_NAME = Get-ChildItem -Directory | Where-Object { $_.LastWriteTime -ge $file.LastWriteTime } | Select-Object -ExpandProperty Name
-helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME --namespace spring-6-data-rest --create-namespace --wait --timeout 5m --debug
+helm upgrade --install $APPLICATION_NAME ./$APPLICATION_NAME --namespace spring-6-data-rest --create-namespace --wait --timeout 5m --debug --render-subchart-notes
 ```
 
 show logs
@@ -82,6 +82,16 @@ kubectl logs $POD -n spring-6-data-rest --all-containers
 Show Endpoints
 ```powershell
 kubectl get endpoints -n sdjpa-intro
+```
+
+status
+```powershell
+helm status $APPLICATION_NAME --namespace spring-6-data-rest
+```
+
+test
+```powershell
+helm test $APPLICATION_NAME --namespace spring-6-data-rest --logs
 ```
 
 uninstall
