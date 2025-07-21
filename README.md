@@ -98,3 +98,13 @@ uninstall
 ```powershell
 helm uninstall $APPLICATION_NAME  --namespace spring-6-data-rest
 ```
+
+delete all
+```powershell
+kubectl delete all --all -n spring-6-data-rest
+```
+
+create busybox sidecar
+```powershell
+kubectl run busybox-test --rm -it --image=busybox:1.36 --namespace=spring-6-data-rest --command -- sh
+```
