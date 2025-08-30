@@ -28,7 +28,7 @@ mvn clean install -DskipTests
 
 ### Deployment with Kubernetes
 
-Deployment goes into the default namespace.
+Deployment goes into the default namespace
 
 To deploy all resources:
 ```bash
