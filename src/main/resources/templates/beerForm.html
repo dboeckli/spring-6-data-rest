@@ -23,7 +23,7 @@
         <div class="mb-3">
             <label for="beerStyle" class="form-label">Style:</label>
             <select class="form-select" id="beerStyle" th:field="*{beerStyle}" required>
-                <option th:each="style : ${T(guru.springframework.spring6restmvcapi.entity.BeerStyleEnum).values()}"
+                <option th:each="style : ${T(ch.dboeckli.spring.datarest.entity.BeerStyleEnum).values()}"
                         th:value="${style}" th:text="${style}"></option>
             </select>
         </div>
