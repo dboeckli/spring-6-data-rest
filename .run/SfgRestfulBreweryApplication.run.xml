@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SfgRestfulBreweryApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <module name="spring-6-data-rest" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="guru.springframework.spring6restmvcapi.SfgRestfulBreweryApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ch.dboeckli.spring.datarest.SpringApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
