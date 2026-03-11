@@ -53,7 +53,7 @@
         <webjars-locator.version>0.52</webjars-locator.version>
 
         <!-- https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot -->
-        <springdoc.openapi.version>3.0.1</springdoc.openapi.version>
+        <springdoc.openapi.version>3.0.2</springdoc.openapi.version>
 
         <!-- Sonar -->
         <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
