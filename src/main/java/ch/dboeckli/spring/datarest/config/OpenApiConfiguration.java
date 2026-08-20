@@ -9,14 +9,8 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@OpenAPIDefinition(
-    info = @Info(
-        title = "Spring Data Rest",
-        description = "Some long and useful description",
-        version = "TODO",
-        license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0")
-    )
-)
+@OpenAPIDefinition(info = @Info(title = "Spring Data Rest", description = "Some long and useful description",
+        version = "TODO", license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0")))
 @Configuration
 @RequiredArgsConstructor
 public class OpenApiConfiguration {
@@ -31,4 +25,5 @@ public class OpenApiConfiguration {
             info.setVersion(buildProperties.getVersion());
         };
     }
+
 }

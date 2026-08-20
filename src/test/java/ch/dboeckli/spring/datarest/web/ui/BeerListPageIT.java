@@ -39,7 +39,7 @@ class BeerListPageIT {
     @BeforeEach
     public void setUp() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");  // Run in headless mode
+        options.addArguments("--headless"); // Run in headless mode
         webDriver = new ChromeDriver(options);
     }
 
@@ -63,12 +63,13 @@ class BeerListPageIT {
     void testBeerListContainsItems() {
         webDriver.get("http://localhost:" + port + LIST_BEERS_PAGE);
         waitForPageLoad();
-        
+
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
-        List<WebElement> beerRows = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#beerTable tbody tr")));
-        
+        List<WebElement> beerRows = wait
+            .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#beerTable tbody tr")));
+
         log.info("### Found {} beer rows", beerRows.size());
-        
+
         assertFalse(beerRows.isEmpty(), "Beer list should contain items");
         assertEquals(25, beerRows.size());
     }
@@ -81,13 +82,12 @@ class BeerListPageIT {
 
         // Find and click the edit button for the first beer
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
-        WebElement editButton = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("a[id^='editBeer-']")
-        ));
+        WebElement editButton = wait
+            .until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[id^='editBeer-']")));
         // Extract the beer ID from the edit button's ID
         String editButtonId = editButton.getAttribute("id");
         String beerId = StringUtils.substringAfter(editButtonId, "editBeer-");
-        
+
         editButton.click();
 
         // Wait for the edit page to load
@@ -100,10 +100,12 @@ class BeerListPageIT {
         beerNameInput.sendKeys(newBeerName);
 
         // Submit the form
-        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
+        WebElement submitButton = wait
+            .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
         try {
             submitButton.click();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             JavascriptExecutor executor = (JavascriptExecutor) webDriver;
             executor.executeScript("arguments[0].click();", submitButton);
         }
@@ -111,7 +113,8 @@ class BeerListPageIT {
         // Wait for the beer list page to reload
         wait.until(ExpectedConditions.urlToBe("http://localhost:" + port + LIST_BEERS_PAGE));
 
-        List<WebElement> beerRows = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#beerTable tbody tr")));
+        List<WebElement> beerRows = wait
+            .until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#beerTable tbody tr")));
         log.info("Logging all beer names and IDs:");
         HashMap<String, String> beerMap = new HashMap<>();
         for (WebElement row : beerRows) {
@@ -164,10 +167,12 @@ class BeerListPageIT {
         quantityOnHandInput.sendKeys("100");
 
         // Submit the form
-        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
+        WebElement submitButton = wait
+            .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']")));
         try {
             submitButton.click();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             JavascriptExecutor executor = (JavascriptExecutor) webDriver;
             executor.executeScript("arguments[0].click();", submitButton);
         }
@@ -180,17 +185,18 @@ class BeerListPageIT {
         int finalTotalItems = Integer.parseInt(totalItemsElement.getText());
         log.info("Final total items: {}", finalTotalItems);
 
-        assertEquals(initialTotalItems + 1, finalTotalItems, "Total number of beers should increase by 1 after creation");
+        assertEquals(initialTotalItems + 1, finalTotalItems,
+                "Total number of beers should increase by 1 after creation");
 
         // Navigate to the next page
-        WebElement nextPageButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@class, 'page-link') and text()='Next']")));
+        WebElement nextPageButton = wait.until(ExpectedConditions
+            .elementToBeClickable(By.xpath("//a[contains(@class, 'page-link') and text()='Next']")));
         nextPageButton.click();
         waitForPageLoad();
-        
+
         // Verify that the new beer is in the list
         List<WebElement> beerNames = webDriver.findElements(By.cssSelector("td[id^='beerName-']"));
-        boolean newBeerExists = beerNames.stream()
-            .anyMatch(element -> element.getText().equals(newBeerName));
+        boolean newBeerExists = beerNames.stream().anyMatch(element -> element.getText().equals(newBeerName));
         assertTrue(newBeerExists, "Newly created beer should be present in the list");
     }
 
@@ -209,9 +215,8 @@ class BeerListPageIT {
         log.info("Initial total items: {}", initialTotalItems);
 
         // Find the delete button for the first beer
-        WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(
-            By.cssSelector("button[id^='deleteBeer-']")
-        ));
+        WebElement deleteButton = wait
+            .until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[id^='deleteBeer-']")));
         String deleteButtonId = deleteButton.getAttribute("id");
         String beerId = StringUtils.substringAfter(deleteButtonId, "deleteBeer-");
 
@@ -235,18 +240,19 @@ class BeerListPageIT {
         int finalTotalItems = Integer.parseInt(totalItemsElement.getText());
         log.info("Final total items: {}", finalTotalItems);
 
-        assertEquals(initialTotalItems - 1, finalTotalItems, "Total number of beers should decrease by 1 after deletion");
+        assertEquals(initialTotalItems - 1, finalTotalItems,
+                "Total number of beers should decrease by 1 after deletion");
 
         // Verify that the deleted beer is no longer in the list
         List<WebElement> remainingBeerNames = webDriver.findElements(By.cssSelector("td[id^='beerName-']"));
-        boolean beerStillExists = remainingBeerNames.stream()
-            .anyMatch(element -> element.getText().equals(beerName));
+        boolean beerStillExists = remainingBeerNames.stream().anyMatch(element -> element.getText().equals(beerName));
         assertFalse(beerStillExists, "Deleted beer should not be present in the list");
     }
 
     private void waitForPageLoad() {
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(30));
-        wait.until((ExpectedCondition<Boolean>) wd ->
-            Objects.equals(((JavascriptExecutor) wd).executeScript("return document.readyState"), "complete"));
+        wait.until((ExpectedCondition<Boolean>) wd -> Objects
+            .equals(((JavascriptExecutor) wd).executeScript("return document.readyState"), "complete"));
     }
+
 }

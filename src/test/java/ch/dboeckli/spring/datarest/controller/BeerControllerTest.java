@@ -22,9 +22,7 @@ class BeerControllerTest {
     @Test
     void testGetAllBeers() throws Exception {
         // Perform GET request and validate response
-        mockMvc.perform(get("/api/v4/beer")
-                .param("sort", "beerName,asc")  
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v4/beer").param("sort", "beerName,asc").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$._embedded.beers", hasSize(20)))
@@ -32,4 +30,5 @@ class BeerControllerTest {
             .andExpect(jsonPath("$._embedded.beers[0].beerStyle", is("STOUT")))
             .andExpect(jsonPath("$._embedded.beers[0].upc", is("8380495518610")));
     }
+
 }

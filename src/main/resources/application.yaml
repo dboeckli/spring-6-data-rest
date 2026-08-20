@@ -7,7 +7,7 @@ spring:
   data:
     rest:
       base-path: /api/v4
-      
+
 management:
   health:
     readinessstate:
@@ -78,11 +78,9 @@ management:
       export:
         enabled: false
 
-        
 security:
   cors:
     allowed-origins:
       - http://localhost:8080 # gateway project runs on port 8080
-      - http://127.0.0.1:8080 # gateway project runs on port 8080    
-  
-  
+      - http://127.0.0.1:8080 # gateway project runs on port 8080
+
