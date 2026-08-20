@@ -45,16 +45,14 @@ class BeerWebControllerTest {
         log.info("### Model attributes:");
         model.asMap().forEach((key, value) -> log.info(key + ": " + value));
 
-        assertAll(
-            () -> assertEquals("beers", viewName),
-            () -> assertEquals(25, ((List<Beer>) model.getAttribute("beers")).size()),
-            () -> assertEquals(2, model.getAttribute("totalPages")),
-            () -> assertEquals(0, model.getAttribute("currentPage")),
-            () -> assertEquals(30L, model.getAttribute("totalItems")),
-            () -> assertEquals(new ArrayList<>(List.of(1, 2)), model.getAttribute("pageNumbers")),
-            () -> assertEquals(0, model.getAttribute("startPage")),
-            () -> assertEquals(1, model.getAttribute("endPage"))
-        );
+        assertAll(() -> assertEquals("beers", viewName),
+                () -> assertEquals(25, ((List<Beer>) model.getAttribute("beers")).size()),
+                () -> assertEquals(2, model.getAttribute("totalPages")),
+                () -> assertEquals(0, model.getAttribute("currentPage")),
+                () -> assertEquals(30L, model.getAttribute("totalItems")),
+                () -> assertEquals(new ArrayList<>(List.of(1, 2)), model.getAttribute("pageNumbers")),
+                () -> assertEquals(0, model.getAttribute("startPage")),
+                () -> assertEquals(1, model.getAttribute("endPage")));
     }
 
     @Test
@@ -76,12 +74,9 @@ class BeerWebControllerTest {
         log.info("### Model attributes for getBeer:");
         model.asMap().forEach((key, value) -> log.info(key + ": " + value));
 
-        assertAll(
-            () -> assertEquals("beer", viewName),
-            () -> assertNotNull(model.getAttribute("beer")),
-            () -> assertInstanceOf(Beer.class, model.getAttribute("beer")),
-            () -> assertEquals(beerId, ((Beer) model.getAttribute("beer")).getId())
-        );
+        assertAll(() -> assertEquals("beer", viewName), () -> assertNotNull(model.getAttribute("beer")),
+                () -> assertInstanceOf(Beer.class, model.getAttribute("beer")),
+                () -> assertEquals(beerId, ((Beer) model.getAttribute("beer")).getId()));
     }
 
     @Test
@@ -127,12 +122,9 @@ class BeerWebControllerTest {
             .orElseThrow(() -> new AssertionError("Beer not found with ID: " + beerId));
         log.info("Beer name changed from '{}' to '{}'", originalBeerName, updatedBeer.getBeerName());
 
-        assertAll(
-            () -> assertNotNull(updatedBeer),
-            () -> assertNotEquals(originalBeerName, updatedBeer.getBeerName()),
-            () -> assertEquals(newBeerName, updatedBeer.getBeerName()),
-            () -> assertEquals(beerId, updatedBeer.getId())
-        );
+        assertAll(() -> assertNotNull(updatedBeer), () -> assertNotEquals(originalBeerName, updatedBeer.getBeerName()),
+                () -> assertEquals(newBeerName, updatedBeer.getBeerName()),
+                () -> assertEquals(beerId, updatedBeer.getId()));
     }
 
     @Test
@@ -150,7 +142,8 @@ class BeerWebControllerTest {
             .quantityOnHand(5)
             .build();
 
-        String listBeerViewName = controller.createBeer(newBeer, new MapBindingResult(new HashMap<>(), "beer"), beerFormModel);
+        String listBeerViewName = controller.createBeer(newBeer, new MapBindingResult(new HashMap<>(), "beer"),
+                beerFormModel);
         assertEquals(REDIRECT_PREFIX + LIST_BEERS_PAGE, listBeerViewName);
 
         Page<Beer> beers = beerRepository.findAllByBeerName("new Beer", Pageable.unpaged());
@@ -174,4 +167,5 @@ class BeerWebControllerTest {
         Optional<Beer> beer = beerRepository.findById(beerIdToDelete);
         assertFalse(beer.isPresent());
     }
+
 }

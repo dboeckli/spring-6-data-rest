@@ -26,6 +26,7 @@ import java.util.List;
 public class SpringSecurityConfigRest {
 
     private static final List<String> ALLOWED_HEADERS = List.of("*");
+
     private static final List<String> ALLOWED_METHODS = List.of("POST", "GET", "PUT", "OPTIONS", "DELETE", "PATCH");
 
     private final AllowedOriginConfig allowedOriginConfig;
@@ -34,20 +35,17 @@ public class SpringSecurityConfigRest {
     public void init() {
         log.info("### Allowed origins: {}", allowedOriginConfig);
     }
-    
+
     @Bean
     @Order(99)
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) {
-        http
-            .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .anyRequest().permitAll())
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**") // CSRF-Schutz für H2-Console deaktivieren
+        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll())
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**") // CSRF-Schutz
+                                                                         // für H2-Console
+                                                                         // deaktivieren
             )
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
-            .headers(headers -> headers
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable) 
-            );
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         return http.build();
     }
 
@@ -70,7 +68,9 @@ public class SpringSecurityConfigRest {
     @ConfigurationProperties(prefix = "security.cors")
     @Data
     public static class AllowedOriginConfig {
+
         private List<String> allowedOrigins;
+
     }
 
 }
