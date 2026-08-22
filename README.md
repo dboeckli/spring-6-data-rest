@@ -28,31 +28,6 @@ To run maven filtering for destination target/k8s and destination target/helm ru
 mvn clean install -DskipTests 
 ```
 
-### Deployment with Kubernetes
-
-Deployment goes into the default namespace
-
-To deploy all resources:
-
-```bash
-kubectl apply -f target/k8s/
-```
-
-To remove all resources:
-
-```bash
-kubectl delete -f target/k8s/
-```
-
-Check
-
-```bash
-kubectl get deployments -o wide
-kubectl get pods -o wide
-```
-
-You can use the actuator rest call to verify via port 30084
-
 ### Deployment with Helm
 
 Be aware that we are using a different namespace here (not default).
