@@ -78,6 +78,7 @@
     <sonar.language>java</sonar.language>
     <sonar.scm.provider>git</sonar.scm.provider>
     <jacoco.version>0.8.15</jacoco.version>
+    <datasource-micrometer.version>2.3.0</datasource-micrometer.version>
   </properties>
 
   <dependencies>
@@ -100,6 +101,16 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.ttddyy.observation</groupId>
+      <artifactId>datasource-micrometer-spring-boot</artifactId>
+      <version>${datasource-micrometer.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.ttddyy.observation</groupId>
+      <artifactId>datasource-micrometer-opentelemetry</artifactId>
+      <version>${datasource-micrometer.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -896,6 +907,11 @@
             </goals>
             <configuration>
               <append>true</append>
+              <excludes>
+                <!-- JaCoCo cannot instrument the generated JSqlParser token manager
+                (MethodTooLargeException); it is a transitive dep of datasource-micrometer-opentelemetry -->
+                <exclude>net/sf/jsqlparser/*</exclude>
+              </excludes>
             </configuration>
           </execution>
           <execution>
