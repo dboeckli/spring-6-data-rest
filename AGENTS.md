@@ -43,7 +43,7 @@ is needed here. On a normal host (Windows/CI) this does not apply either.
 - Everything else (pom.xml, `**/*.md`, json, `src/main/resources/application*.yaml`, `**/*.sh`):
   Spotless → fix with `./mvnw spotless:apply`.
 - Spotless flexmark also formats markdown, so `README.md` edits must stay flexmark-clean; run
-  `./mvnw spotless:apply` after editing markdown. `AGENTS.md` and `CLAUDE.md` are excluded.
+  `./mvnw spotless:apply` after editing markdown. `AGENTS.md` is excluded.
 - Shell scripts are formatted by Spotless/shfmt `3.13.1`.
 
 ## Test conventions
