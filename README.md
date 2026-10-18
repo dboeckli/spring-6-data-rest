@@ -172,7 +172,7 @@ external dependency is needed for local development.
 ### Start the sandbox (opencode-sandbox-kit)
 
 The sandbox is provisioned by the opencode-sandbox-kit and runs as a Docker container. It mounts this
-repo, starts opencode, and connects the IntelliJ MCP server.
+repo, starts opencode, and connects the IntelliJ, Kubernetes and Docker MCP servers.
 
 Allow the kit source (GitHub without cloning):
 
@@ -187,21 +187,8 @@ sbx run opencode `
     --kit "git+https://codeberg.org/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
     --template docker.io/domboeckli/sbx-opencode-tooling:latest `
     --skills=off `
-    --static-mcp idea `
+    --static-mcp idea,k8s,docker `
     . `
-    "C:\development\maven-repo:ro"
-```
-
-Start the sandbox with Kubernetes support:
-
-```powershell
-sbx run opencode `
-    --kit "git+https://codeberg.org/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
-    --template docker.io/domboeckli/sbx-opencode-tooling:latest `
-    --skills=off `
-    --static-mcp idea `
-    . `
-    "$env:USERPROFILE\.kube:ro" `
     "C:\development\maven-repo:ro"
 ```
 
