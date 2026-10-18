@@ -1,0 +1,89 @@
+### actuator
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator info
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/info
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator health
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/health
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator health
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/health/readiness
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator health
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/health/liveness
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator sbom
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/sbom
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator sbom application
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/actuator/sbom/application
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/octet-stream
+
+### actuator metrics
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/metrics
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator env
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/env
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator env
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/configprops
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator beans
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/beans
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator caches
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/caches
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+
+### actuator get loggers
+< scripts/traceparent.js
+GET localhost:{{application-port}}/actuator/loggers
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
