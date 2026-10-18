@@ -40,10 +40,9 @@ public class SpringSecurityConfigRest {
     @Order(99)
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll())
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**") // CSRF-Schutz
-                                                                         // für H2-Console
-                                                                         // deaktivieren
-            )
+            // CSRF is meaningless for the stateless REST API; keep it for the Thymeleaf
+            // web UI
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/**"))
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         return http.build();

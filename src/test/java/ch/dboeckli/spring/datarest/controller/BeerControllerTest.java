@@ -6,10 +6,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -29,6 +31,24 @@ class BeerControllerTest {
             .andExpect(jsonPath("$._embedded.beers[0].beerName", is("Adjunct Trail")))
             .andExpect(jsonPath("$._embedded.beers[0].beerStyle", is("STOUT")))
             .andExpect(jsonPath("$._embedded.beers[0].upc", is("8380495518610")));
+    }
+
+    @Test
+    @Transactional
+    void testCreateBeerWithoutCsrfToken() throws Exception {
+        String body = """
+                {
+                  "beerName": "CSRF Test Beer",
+                  "beerStyle": "ALE",
+                  "upc": "csrf-test-upc",
+                  "quantityOnHand": 1,
+                  "price": 1.23
+                }
+                """;
+
+        mockMvc.perform(post("/api/v4/beer").contentType(MediaType.APPLICATION_JSON).content(body))
+            .andExpect(status().isCreated())
+            .andExpect(header().exists("Location"));
     }
 
 }
