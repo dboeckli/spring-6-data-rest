@@ -1,0 +1,31 @@
+### Profile
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/api/v4/profile/beer
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+Content-Type: application/json
+
+### Get all beers
+< scripts/traceparent.js
+GET http://localhost:{{application-port}}/api/v4/beer
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+Content-Type: application/json
+
+### Create new Beer
+< scripts/traceparent.js
+POST http://localhost:{{application-port}}/api/v4/beer
+traceparent: 00-{{traceId}}-{{spanId}}-03
+baggage: testBaggage=spring-6-data-rest
+Accept: application/json
+Content-Type: application/json; charset=utf-8
+
+{
+    "beerName": "Mango Bobs New",
+    "beerStyle": "ALE",
+    "upc": "0631234200036",
+    "quantityOnHand": 310,
+    "price": 28.00
+}

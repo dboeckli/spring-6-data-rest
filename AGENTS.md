@@ -29,6 +29,8 @@ After changing code, always verify: run the relevant Maven goal above and report
 - The chart is named `spring-6-data-rest-chart` (renamed from the bare artifactId). Chart
   `appVersion` and the deployed container name are `spring-6-data-rest`.
 - Helm is invoked directly via `exec-maven-plugin` (Helm v4-compatible), not the kokuwa plugin.
+  CI pins Helm `v4.3.1` via `azure/setup-helm`; in the sandbox (where `helm` is v3) run Maven with
+  `-Dhelm.executable=helm4`.
 
 ## Sandbox build quirk (background)
 
@@ -43,7 +45,7 @@ is needed here. On a normal host (Windows/CI) this does not apply either.
 - Everything else (pom.xml, `**/*.md`, json, `src/main/resources/application*.yaml`, `**/*.sh`):
   Spotless → fix with `./mvnw spotless:apply`.
 - Spotless flexmark also formats markdown, so `README.md` edits must stay flexmark-clean; run
-  `./mvnw spotless:apply` after editing markdown. `AGENTS.md` and `CLAUDE.md` are excluded.
+  `./mvnw spotless:apply` after editing markdown. `AGENTS.md` is excluded.
 - Shell scripts are formatted by Spotless/shfmt `3.13.1`.
 
 ## Test conventions

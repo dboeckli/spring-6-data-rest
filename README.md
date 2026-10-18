@@ -1,6 +1,70 @@
-# Spring Framework 6: Beginner to Guru
+# Spring Data REST API
 
-## Spring Data Rest
+## Abstract
+
+Spring Boot 4 application (Java 25) exposing a Spring Data REST API for the `Beer` entity under the
+base path `/api/v4`. Data is stored in an in-memory H2 database; the API is protected by Spring
+Security (CORS, CSRF exemption for the stateless REST API), documented via OpenAPI 3 (springdoc) and
+complemented by a Thymeleaf web UI for browsing and editing beers. Deployment is Helm-based
+(Kubernetes, port `8084` / NodePort `30084`).
+
+## Architecture Overview
+
+```mermaid
+graph LR
+    Client(["💻 Browser / REST Client"])
+
+    subgraph App ["spring-6-data-rest (Spring Boot 4, Java 25)"]
+        Security["Spring Security\nCORS + CSRF"]
+        DataRest["Spring Data REST\n/api/v4"]
+        WebUI["BeerWebController\n/web/beers (Thymeleaf)"]
+        Repo["BeerRepository\n(JpaRepository)"]
+        Seed["BeerLoader\n(CommandLineRunner)"]
+        Docs["Actuator + OpenAPI\n/actuator, /v3/api-docs"]
+        Obs["Micrometer / OpenTelemetry\ntraces, metrics, log export"]
+    end
+
+    subgraph Persistence ["Persistence"]
+        H2[("H2\nIn-Memory")]
+    end
+
+    Client -->|"HTTP"| Security
+    Security -->|"JSON (HAL)"| DataRest
+    Security -->|"HTML"| WebUI
+    DataRest --> Repo
+    WebUI --> Repo
+    Repo --> H2
+    Seed -->|"seed data"| Repo
+```
+
+`Customer` currently exists only as a plain POJO (no `@Entity`/repository) and is not exposed by
+Spring Data REST.
+
+## Database Schema
+
+```mermaid
+erDiagram
+    beer {
+        VARCHAR(36)  id PK
+        BIGINT       version
+        VARCHAR(255) beer_name
+        SMALLINT     beer_style
+        VARCHAR(255) upc
+        INTEGER      quantity_on_hand
+        DECIMAL(38_2) price
+        TIMESTAMP(6) created_date
+        TIMESTAMP(6) last_modified_date
+    }
+```
+
+## Kubernetes Deployment
+
+```mermaid
+graph LR
+    Client(["💻 Browser / REST Client"]) -->|":30084"| NodePort["Service\nNodePort 30084"]
+    NodePort --> Pod["Pod\nspring-6-data-rest:8084"]
+    Pod --> H2[("H2\nIn-Memory")]
+```
 
 ## Swagger/Openapi Url
 
@@ -121,7 +185,7 @@ Start a new sandbox:
 ```powershell
 sbx run opencode `
     --kit "git+https://codeberg.org/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
-    --template docker.cloudsmith.io/dboeckli/sbx/sbx-opencode-tooling:latest `
+    --template docker.io/domboeckli/sbx-opencode-tooling:latest `
     --skills=off `
     --static-mcp idea `
     . `
@@ -133,18 +197,12 @@ Start the sandbox with Kubernetes support:
 ```powershell
 sbx run opencode `
     --kit "git+https://codeberg.org/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent" `
-    --template docker.cloudsmith.io/dboeckli/sbx/sbx-opencode-tooling:latest `
+    --template docker.io/domboeckli/sbx-opencode-tooling:latest `
     --skills=off `
     --static-mcp idea `
     . `
     "$env:USERPROFILE\.kube:ro" `
     "C:\development\maven-repo:ro"
-```
-
-Apply the kit to an existing sandbox (restarts the sandbox, VM state is kept):
-
-```powershell
-sbx kit add opencode-spring-6-data-rest "git+https://codeberg.org/dboeckli/opencode-sandbox-kit.git#dir=opencode-agent"
 ```
 
 ### Start the app
