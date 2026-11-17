@@ -104,7 +104,7 @@ class BeerWebControllerTest {
         assertEquals(BEER_FORM_TEMPLATE, editViewName);
 
         // Get the beer from the edit model
-        Beer beerToEdit = (Beer) editModel.getAttribute("beer");
+        BeerForm beerToEdit = (BeerForm) editModel.getAttribute("beer");
         assertNotNull(beerToEdit);
 
         // Change the beer name
@@ -134,7 +134,7 @@ class BeerWebControllerTest {
         String beerFormViewName = controller.newBeerForm(beerFormModel);
         assertEquals(BEER_FORM_TEMPLATE, beerFormViewName);
 
-        Beer newBeer = Beer.builder()
+        BeerForm newBeer = BeerForm.builder()
             .beerName("new Beer")
             .beerStyle(BeerStyleEnum.IPA)
             .upc("1234567890123")
@@ -157,7 +157,7 @@ class BeerWebControllerTest {
         MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
         bindingResult.rejectValue("beerName", "invalid", "Beer name is invalid");
 
-        Beer newBeer = Beer.builder()
+        BeerForm newBeer = BeerForm.builder()
             .beerName("invalid Beer")
             .beerStyle(BeerStyleEnum.IPA)
             .upc("1234567890124")
@@ -178,7 +178,7 @@ class BeerWebControllerTest {
         MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
         bindingResult.rejectValue("createdDate", "invalid", "Created date is invalid");
 
-        Beer newBeer = Beer.builder()
+        BeerForm newBeer = BeerForm.builder()
             .beerName("ignored validation Beer")
             .beerStyle(BeerStyleEnum.ALE)
             .upc("1234567890125")

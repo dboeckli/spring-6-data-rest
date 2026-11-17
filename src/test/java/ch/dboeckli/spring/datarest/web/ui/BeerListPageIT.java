@@ -37,14 +37,14 @@ class BeerListPageIT {
     private WebDriver webDriver;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); // Run in headless mode
         webDriver = new ChromeDriver(options);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (webDriver != null) {
             webDriver.quit();
         }
@@ -105,7 +105,7 @@ class BeerListPageIT {
         try {
             submitButton.click();
         }
-        catch (Exception e) {
+        catch (Exception _) {
             JavascriptExecutor executor = (JavascriptExecutor) webDriver;
             executor.executeScript("arguments[0].click();", submitButton);
         }
@@ -172,7 +172,7 @@ class BeerListPageIT {
         try {
             submitButton.click();
         }
-        catch (Exception e) {
+        catch (Exception _) {
             JavascriptExecutor executor = (JavascriptExecutor) webDriver;
             executor.executeScript("arguments[0].click();", submitButton);
         }
