@@ -34,3 +34,7 @@ build/
 
 ### Review artifacts ###
 .review/
+
+### Bruno ###
+restRequest/bruno/tools/node_modules/
+bru-reports/
