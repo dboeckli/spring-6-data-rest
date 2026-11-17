@@ -151,6 +151,49 @@ class BeerWebControllerTest {
     }
 
     @Test
+    @Order(4)
+    void testCreateBeerWithValidationErrors() {
+        Model beerFormModel = new ExtendedModelMap();
+        MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
+        bindingResult.rejectValue("beerName", "invalid", "Beer name is invalid");
+
+        Beer newBeer = Beer.builder()
+            .beerName("invalid Beer")
+            .beerStyle(BeerStyleEnum.IPA)
+            .upc("1234567890124")
+            .price(BigDecimal.valueOf(9.99))
+            .quantityOnHand(5)
+            .build();
+
+        String viewName = controller.createBeer(newBeer, bindingResult, beerFormModel);
+
+        assertAll(() -> assertEquals(BEER_FORM_TEMPLATE, viewName),
+                () -> assertEquals(newBeer, beerFormModel.getAttribute("beer")));
+    }
+
+    @Test
+    @Order(5)
+    void testCreateBeerWithOnlyIgnoredValidationErrors() {
+        Model beerFormModel = new ExtendedModelMap();
+        MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
+        bindingResult.rejectValue("createdDate", "invalid", "Created date is invalid");
+
+        Beer newBeer = Beer.builder()
+            .beerName("ignored validation Beer")
+            .beerStyle(BeerStyleEnum.ALE)
+            .upc("1234567890125")
+            .price(BigDecimal.valueOf(4.99))
+            .quantityOnHand(3)
+            .build();
+
+        String viewName = controller.createBeer(newBeer, bindingResult, beerFormModel);
+
+        assertEquals(REDIRECT_PREFIX + LIST_BEERS_PAGE, viewName);
+        assertEquals(1,
+                beerRepository.findAllByBeerName("ignored validation Beer", Pageable.unpaged()).getTotalElements());
+    }
+
+    @Test
     @Order(99)
     void testDeleteBeer() {
         // First, get a list of beers to obtain a valid ID
