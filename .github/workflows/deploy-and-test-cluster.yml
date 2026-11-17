@@ -36,6 +36,11 @@ jobs:
 
   deploy-app-with-helm:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      checks: write
+
     steps:
       - name: Show Version
         env:
