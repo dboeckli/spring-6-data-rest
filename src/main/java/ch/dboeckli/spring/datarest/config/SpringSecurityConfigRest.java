@@ -38,6 +38,9 @@ public class SpringSecurityConfigRest {
 
     @Bean
     @Order(99)
+    // CSRF protection is not applicable to the stateless JWT-based REST API; the
+    // Thymeleaf web UI keeps the default CSRF protection.
+    @SuppressWarnings("java:S4502")
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll())
             // CSRF is meaningless for the stateless REST API; keep it for the Thymeleaf

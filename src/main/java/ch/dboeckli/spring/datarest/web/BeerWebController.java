@@ -14,8 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -46,7 +44,7 @@ public class BeerWebController {
     public String listBeers(Model model, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size) {
         Page<Beer> beerPage = beerRepository.findAll(PageRequest.of(page, size));
-        model.addAttribute("beers", beerPage.getContent());
+        model.addAttribute(BEERS_TEMPLATE, beerPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", beerPage.getTotalPages());
         model.addAttribute("totalItems", beerPage.getTotalElements());
@@ -78,12 +76,12 @@ public class BeerWebController {
     @GetMapping("/" + BEER_TEMPLATE + "/new")
     public String newBeerForm(Model model) {
         log.info("Creating new beer in form");
-        model.addAttribute("beer", new Beer());
+        model.addAttribute("beer", new BeerForm());
         return BEER_FORM_TEMPLATE;
     }
 
     @PostMapping("/" + BEER_TEMPLATE + "/edit/")
-    public String createBeer(@Valid @ModelAttribute Beer beer, BindingResult bindingResult, Model model) {
+    public String createBeer(@Valid @ModelAttribute("beer") BeerForm beer, BindingResult bindingResult, Model model) {
         log.info("### Creating new beer: {}", beer);
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors occurred: {}", bindingResult.getAllErrors());
@@ -98,15 +96,14 @@ public class BeerWebController {
                 return BEER_FORM_TEMPLATE;
             }
         }
-        Beer newBeer = new Beer();
-        newBeer.setBeerName(beer.getBeerName());
-        newBeer.setBeerStyle(beer.getBeerStyle());
-        newBeer.setUpc(beer.getUpc());
-        newBeer.setQuantityOnHand(beer.getQuantityOnHand());
-        newBeer.setPrice(beer.getPrice());
-        newBeer.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
-        newBeer.setLastModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
-        Beer createdBeer = beerRepository.save(beer);
+        Beer newBeer = Beer.builder()
+            .beerName(beer.getBeerName())
+            .beerStyle(beer.getBeerStyle())
+            .upc(beer.getUpc())
+            .quantityOnHand(beer.getQuantityOnHand())
+            .price(beer.getPrice())
+            .build();
+        Beer createdBeer = beerRepository.save(newBeer);
         log.info("### Created new beer: {}", createdBeer);
         return REDIRECT_PREFIX + LIST_BEERS_PAGE;
     }
@@ -116,12 +113,12 @@ public class BeerWebController {
         log.info("Updating existing beer in form");
         Beer beer = beerRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));
-        model.addAttribute("beer", beer);
+        model.addAttribute("beer", BeerForm.from(beer));
         return BEER_FORM_TEMPLATE;
     }
 
     @PostMapping("/" + BEER_TEMPLATE + "/edit/{id}")
-    public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") Beer beer) {
+    public String updateBeer(@PathVariable UUID id, @Valid @ModelAttribute("beer") BeerForm beer) {
         log.info("### Updating beer: {}", id);
         Beer existingBeer = beerRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Beer not found"));

@@ -104,7 +104,7 @@ class BeerWebControllerTest {
         assertEquals(BEER_FORM_TEMPLATE, editViewName);
 
         // Get the beer from the edit model
-        Beer beerToEdit = (Beer) editModel.getAttribute("beer");
+        BeerForm beerToEdit = (BeerForm) editModel.getAttribute("beer");
         assertNotNull(beerToEdit);
 
         // Change the beer name
@@ -134,7 +134,7 @@ class BeerWebControllerTest {
         String beerFormViewName = controller.newBeerForm(beerFormModel);
         assertEquals(BEER_FORM_TEMPLATE, beerFormViewName);
 
-        Beer newBeer = Beer.builder()
+        BeerForm newBeer = BeerForm.builder()
             .beerName("new Beer")
             .beerStyle(BeerStyleEnum.IPA)
             .upc("1234567890123")
@@ -148,6 +148,49 @@ class BeerWebControllerTest {
 
         Page<Beer> beers = beerRepository.findAllByBeerName("new Beer", Pageable.unpaged());
         assertEquals(1, beers.getTotalElements());
+    }
+
+    @Test
+    @Order(4)
+    void testCreateBeerWithValidationErrors() {
+        Model beerFormModel = new ExtendedModelMap();
+        MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
+        bindingResult.rejectValue("beerName", "invalid", "Beer name is invalid");
+
+        BeerForm newBeer = BeerForm.builder()
+            .beerName("invalid Beer")
+            .beerStyle(BeerStyleEnum.IPA)
+            .upc("1234567890124")
+            .price(BigDecimal.valueOf(9.99))
+            .quantityOnHand(5)
+            .build();
+
+        String viewName = controller.createBeer(newBeer, bindingResult, beerFormModel);
+
+        assertAll(() -> assertEquals(BEER_FORM_TEMPLATE, viewName),
+                () -> assertEquals(newBeer, beerFormModel.getAttribute("beer")));
+    }
+
+    @Test
+    @Order(5)
+    void testCreateBeerWithOnlyIgnoredValidationErrors() {
+        Model beerFormModel = new ExtendedModelMap();
+        MapBindingResult bindingResult = new MapBindingResult(new HashMap<>(), "beer");
+        bindingResult.rejectValue("createdDate", "invalid", "Created date is invalid");
+
+        BeerForm newBeer = BeerForm.builder()
+            .beerName("ignored validation Beer")
+            .beerStyle(BeerStyleEnum.ALE)
+            .upc("1234567890125")
+            .price(BigDecimal.valueOf(4.99))
+            .quantityOnHand(3)
+            .build();
+
+        String viewName = controller.createBeer(newBeer, bindingResult, beerFormModel);
+
+        assertEquals(REDIRECT_PREFIX + LIST_BEERS_PAGE, viewName);
+        assertEquals(1,
+                beerRepository.findAllByBeerName("ignored validation Beer", Pageable.unpaged()).getTotalElements());
     }
 
     @Test
