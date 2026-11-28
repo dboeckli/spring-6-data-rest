@@ -95,6 +95,9 @@ jobs:
         with:
           version: v4.3.2
 
+      - name: Show Helm version
+        run: helm version --short
+
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376 # v1.15.2
 

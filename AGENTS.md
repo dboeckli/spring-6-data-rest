@@ -29,8 +29,8 @@ After changing code, always verify: run the relevant Maven goal above and report
 - The chart is named `spring-6-data-rest-chart` (renamed from the bare artifactId). Chart
   `appVersion` and the deployed container name are `spring-6-data-rest`.
 - Helm is invoked directly via `exec-maven-plugin` (Helm v4-compatible), not the kokuwa plugin.
-  CI pins Helm `v4.3.1` via `azure/setup-helm`; in the sandbox (where `helm` is v3) run Maven with
-  `-Dhelm.executable=helm4`.
+  CI pins Helm `v4.3.2` via `azure/setup-helm` before the first Helm call (runner default is Helm 3).
+  The sandbox kit ships Helm 4 as `helm`, so `-Dhelm.executable=helm4` is no longer needed.
 
 ## Sandbox build quirk (background)
 
