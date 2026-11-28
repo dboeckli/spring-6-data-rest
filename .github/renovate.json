@@ -142,9 +142,8 @@
                 "/^\\.github\\/workflows\\/.*\\.ya?ml$/"
             ],
             "matchStrings": [
-                "version: v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
-            ],
-            "autoReplaceStringTemplate": "version: v{{{newValue}}}"
+                "uses: azure/setup-helm@[^\\n]+\\n\\s+with:\\n\\s+version: v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+            ]
         },
         {
             "description": "Update shfmt version pinned in pom.xml (spotless shfmt formatter) and GitHub workflows (mfinelli/setup-shfmt)",
